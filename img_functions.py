@@ -1,3 +1,6 @@
+"""
+Image manipulation and utility functions.
+"""
 import os
 import math
 import tarfile
@@ -7,14 +10,14 @@ import scipy.ndimage
 from scipy.misc import imread
 
 
-def downloadImages(filename, expectedSize, force=False):
+def downloadImages(filename, expected_size, force=False):
     url = 'http://www.robots.ox.ac.uk/~vgg/data/pets/data/'
     path = os.getcwd()
     dest_filename = os.path.join(path, filename)
 
     if os.path.exists(dest_filename):
         statinfo = os.stat(dest_filename)
-        if statinfo.st_size != expectedSize:
+        if statinfo.st_size != expected_size:
             force = True
             print "File {} not expected size, forcing download".format(filename)
         else:
@@ -36,26 +39,26 @@ def maybeExtract(filename, force=False):
         tar.extractall(os.getcwd())
         tar.close()
 
-def sortImages(testPer):
+def sortImages(test_percent):
     numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     path1 = os.getcwd() + '/images/'
     listing = os.listdir(path1)
     if len(listing) == 37:
-        print "Images allready sorted"
+        print "Images already sorted"
         return
 
-    for i in listing:
+    for all_images in listing:
         folder = ''
-        for ii in i:
-            if ii in numbers:
+        for image_dir in all_images:
+            if image_dir in numbers:
                 break
             else:
-                folder += ii
+                folder += image_dir
 
         folder = folder.replace("_", "")
-        if not os.path.exists(path1+folder):
-            os.makedirs(path1+folder)
-        os.rename(path1+i, path1+folder + '/' + i)
+        if not os.path.exists(path1 + folder):
+            os.makedirs(path1 + folder)
+        os.rename(path1 + all_images, path1+folder + '/' + all_images)
 
     listing = os.listdir(path1)
 
@@ -69,10 +72,10 @@ def sortImages(testPer):
         if not os.path.exists(path2 + 'test'):
             os.makedirs(path2 + 'test')
 
-        for ii in listing2[0:int(float(math.floor(len(listing2)*testPer)))]:
+        for ii in listing2[0:int(float(math.floor(len(listing2)*test_percent)))]:
             os.rename(path2+ii, path2+'test'+'/'+ii)
 
-        for ii in listing2[int(math.floor(len(listing2)*testPer)):]:
+        for ii in listing2[int(math.floor(len(listing2)*test_percent)):]:
             os.rename(path2+ii, path2+'train'+'/'+ii)
 
     print("Images sorted")
