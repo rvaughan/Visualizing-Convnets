@@ -79,7 +79,7 @@ def sortImages(testPer):
 
 def buildDataset(include_all=False, class_list=None):
 
-    dataset = []
+    datasets = []
     path1 = os.getcwd()+'/images/'
     listing = os.listdir(path1)
 
@@ -88,32 +88,32 @@ def buildDataset(include_all=False, class_list=None):
             if class_list is not None:
                 if i in class_list:
                     print "Adding class '{0}'...".format(i)
-                    dataset.append(i)
+                    datasets.append(i)
             else:
                 choice = input("Do you want to use {} in your dataset?  [y/n/break]".format(i))
                 if choice.lower() == 'y':
-                    dataset.append(i)
+                    datasets.append(i)
                 if choice.lower() == 'break':
                     break
         else:
-            dataset.append(i)
+            datasets.append(i)
 
     train_x = np.zeros([1, 224, 224, 3])
-    train_y = np.zeros([1, len(dataset)])
-    classes = len(dataset)
+    train_y = np.zeros([1, len(datasets)])
+    classes = len(datasets)
     classLabels = []
 
     oneHotCounter = 0
 
-    for i in dataset:
-        impath = os.getcwd()+'/images/' + i + '/train/'
+    for dataset in datasets:
+        impath = os.getcwd()+'/images/' + dataset + '/train/'
         listing2 = os.listdir(impath)
-        classLabels.append(i)
-        for i in listing2:
-            img = scipy.misc.imresize(imread(impath+i).astype(np.float32), [224, 224])
+        classLabels.append(dataset)
+        for l2_i in listing2:
+            img = scipy.misc.imresize(imread(impath + l2_i).astype(np.float32), [224, 224])
             img = img.reshape([1, 224, 224, 3])
             train_x = np.vstack((train_x, img))
-            onehot = np.zeros([1, len(dataset)])
+            onehot = np.zeros([1, len(datasets)])
             onehot[0, oneHotCounter] = 1
             train_y = np.vstack((train_y, onehot))
 
@@ -123,11 +123,11 @@ def buildDataset(include_all=False, class_list=None):
     train_x -= mean
 
     test_x = np.zeros(shape=[1, 224, 224, 3])
-    test_y = np.zeros([1,len(dataset)])
+    test_y = np.zeros([1, len(datasets)])
 
     oneHotCounter = 0
 
-    for i in dataset:
+    for i in datasets:
         impath = os.getcwd()+'/images/'+i+'/test/'
         listing2 = os.listdir(impath)
 
@@ -135,8 +135,8 @@ def buildDataset(include_all=False, class_list=None):
             img = scipy.misc.imresize(imread(impath+ii).astype(np.float32), [224, 224])
             img = img.reshape([1, 224, 224, 3])
             test_x = np.vstack((test_x, img))
-            onehot = np.zeros([1, len(dataset)])
-            onehot[0,oneHotCounter] = 1
+            onehot = np.zeros([1, len(datasets)])
+            onehot[0, oneHotCounter] = 1
             test_y = np.vstack((test_y, onehot))
 
         print("{} = {}".format(i, onehot))
