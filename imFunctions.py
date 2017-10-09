@@ -77,18 +77,26 @@ def sortImages(testPer):
 
     print("Images sorted")
 
-def buildDataset():
+def buildDataset(include_all=False, class_list=None):
 
     dataset = []
     path1 = os.getcwd()+'/images/'
     listing = os.listdir(path1)
 
     for i in listing:
-        choice = input("Do you want to use {} in your dataset?  [y/n/break]".format(i))
-        if choice.lower() == 'y':
+        if not include_all:
+            if class_list is not None:
+                if i in class_list:
+                    print "Adding class '{0}'...".format(i)
+                    dataset.append(i)
+            else:
+                choice = input("Do you want to use {} in your dataset?  [y/n/break]".format(i))
+                if choice.lower() == 'y':
+                    dataset.append(i)
+                if choice.lower() == 'break':
+                    break
+        else:
             dataset.append(i)
-        if choice.lower() == 'break':
-            break
 
     train_x = np.zeros([1, 224, 224, 3])
     train_y = np.zeros([1, len(dataset)])
